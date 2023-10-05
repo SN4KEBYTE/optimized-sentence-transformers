@@ -1,3 +1,14 @@
+# PyCharm
+.idea/
+
+# Test models
+*.onnx
+*.json
+*.txt
+
+# Notebooks
+*.ipynb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
