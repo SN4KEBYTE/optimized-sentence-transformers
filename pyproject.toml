@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "optimized-sentence-transformers"
+version = "0.1.0"
+description = "Fast inference of Sentence Transformers using ONNX."
+authors = ["Timur Kasimov <tkasimov@icloud.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+onnxruntime = ">=1.10"
+transformers = ">=4,<5"
+psutil = ">=5,<6"
+sentence-transformers = {version = ">2,<3", optional = true}
+onnx = {version = ">=1.10", optional = true}
+jupyterlab = {version = "^4.0.6", optional = true}
+
+[tool.poetry.dev-dependencies]
+wemake-python-styleguide = "0.18.0"
+mypy = ">=1.5,<1.6"
+pytest = ">=7,<8"
+
+[tool.poetry.extras]
+conversion = ["sentence-transformers", "onnx"]
+jupyter = ["jupyterlab"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+line_length = 120
+force_alphabetical_sort_within_sections = true
+include_trailing_comma = true
+use_parentheses = true
+multi_line_output = 3
+force_grid_wrap = 2
+
+[tool.mypy]
+python_version = "3.9"
+
+exclude = ["tests/"]
+
+ignore_missing_imports = true
+disallow_untyped_calls = false
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+allow_untyped_globals = true
+allow_redefinition = true
+
+follow_imports = "skip"
