@@ -4,6 +4,7 @@ from typing import Union
 
 import torch
 from sentence_transformers import SentenceTransformer
+from transformers import BertModel
 
 _DYNAMIC_AXES = {  # noqa: WPS407
     0: 'batch_size',
@@ -29,6 +30,9 @@ def convert(
 
     model = SentenceTransformer(model_name_or_path)
 
+    if not isinstance(model[0].auto_model, BertModel):
+        raise ValueError('only BertModel based models are supported')
+
     if len(model) > 2:
         raise RuntimeError('models with additional normalization layer are not supported for now')
 
@@ -42,25 +46,25 @@ def convert(
 
     torch.onnx.export(
         model[0].auto_model,
-        args=tuple(example_inputs.values()),
+        args=(
+            example_inputs['input_ids'],
+            example_inputs['attention_mask'],
+            example_inputs['token_type_ids'],
+        ),
         f=str(out_path / 'model.onnx'),
         opset_version=opset_version,
         do_constant_folding=True,
         input_names=[
             'input_ids',
-            'token_type_ids',
             'attention_mask',
+            'token_type_ids',
         ],
-        output_names=[
-            'last_hidden_state',
-            'pooler_output',
-        ],
+        output_names=['last_hidden_state'],
         dynamic_axes={
             'input_ids': _DYNAMIC_AXES,
             'token_type_ids': _DYNAMIC_AXES,
             'attention_mask': _DYNAMIC_AXES,
             'last_hidden_state': _DYNAMIC_AXES,
-            'pooler_output': {0: 'batch_size'},
         },
         **kwargs,
     )
